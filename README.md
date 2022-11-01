@@ -5,6 +5,8 @@ See instructions for creating your final portfolio [here](https://docs.google.co
 
 This is a line from RStudio.
 
+:) 
+
 # Table of Contents 
 
 ## Final Grade Reflection
