@@ -9,9 +9,9 @@ This is a line from RStudio.
 
 # Table of Contents 
 
-## Final Grade Reflection
-
 ## Essay Responses
+
+## Final Grade Reflection
 
 ## Supporting Artifacts 
 
