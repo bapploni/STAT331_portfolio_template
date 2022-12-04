@@ -1,0 +1,163 @@
+---
+title: "Lab 2"
+author: "Brady Applonie"
+format: 
+  html: 
+    self-contained: TRUE
+    theme: materia
+    fontsize: 0.9em
+    linestretch: 1.7
+    code-fold: true
+    code-summary: "Show the code"
+editor: visual
+theme: default
+execute: 
+  echo: true
+  error: true
+---
+
+```{r setup}
+#| output: false
+install.packages("ggridges")
+library(tidyverse)
+library(here)
+library(ggridges)
+```
+
+```{r data}
+#| output: false
+surveys <- read_csv(here::here("Week 2", "surveys.csv"))
+```
+
+# Inspecting the Data
+
+**1. What are the dimensions of these data?**
+
+There are 30,463 observations ranging across 15 variables.
+
+```{r}
+#| output: false
+dim(surveys)
+```
+
+**2. What are the data types of the variables in the data set?**
+
+The data types of the variables in this data set are numerical, characters, and dates.
+
+```{r}
+#| output: false
+str(surveys)
+```
+
+# Scatterplot
+
+**3.**
+
+```{r scatterplot}
+ggplot(data = surveys, mapping = aes(x = weight, y = hindfoot_length)) + 
+   geom_point() + 
+   labs(x = "Weight (grams)", 
+        y = "Hindfoot Length (mm)",
+        title = "Hindfoot Length vs. Weight")
+```
+
+**4.**
+
+```{r alpha}
+ggplot(data = surveys, mapping = aes(x = weight, y = hindfoot_length)) + 
+   geom_point(alpha = .12) +
+   labs(x = "Weight (grams)", 
+        y = "Hindfoot Length (mm)",
+        title = "Alphaed version of Hindfoot Length vs Weight")
+```
+
+**5.**
+
+```{r jitter}
+ggplot(data = surveys, mapping = aes(x = weight, y = hindfoot_length)) + 
+   geom_point(alpha = .09) +
+   geom_jitter(height = 2, width = 2, alpha = .08) +
+   labs(x = "Weight (grams)", 
+        y = "Hindfoot Length (mm)",
+        title = "Jittered version of Hindfoot Length vs Weight")
+
+```
+
+# Faceting
+
+**6.**
+
+```{r facet}
+
+ggplot(data = surveys, mapping = aes(x = weight, y = hindfoot_length)) + 
+   geom_jitter(height = 2, width = 2, alpha = .12) + 
+   facet_wrap(~ species) +
+   labs(x = "Weight (grams)", 
+        y = "Hindfoot Length (mm)",
+        title = "Faceted by species, Hindfoot Length vs Weight")
+```
+
+# Boxplots & Density Ridges
+
+**7.**
+
+```{r boxplot-jitter-points}
+ggplot(data = surveys, mapping = aes(x = weight, y = species)) + 
+  geom_boxplot() +
+   labs(x = "Weight (grams)", 
+        y = "Species",
+        title = "Boxplots of Hindfoot Length vs Weight")
+
+```
+
+**8.**
+
+```{r}
+ggplot(data = surveys, mapping = aes(x = weight, y = species)) + 
+  geom_boxplot() + 
+  geom_point() +
+   labs(x = "Weight (grams)", 
+        y = "Species",
+        title = "Boxplots of Hindfoot Length vs Weight, with data points")
+```
+
+**9.**
+
+```{r}
+ggplot(data = surveys, mapping = aes(x = weight, y = species)) + 
+  geom_boxplot(outlier.shape = NA) + 
+  geom_jitter(alpha = .05, color = "red") +
+   labs(x = "Weight (grams)", 
+        y = "Species",
+        title = "Boxplots of Hindfoot Length vs Weight, 
+        with outliers removed & jittered data points")
+
+```
+
+# Customization
+
+**10.**
+
+```{r}
+
+ggplot(data = surveys, mapping = aes(x = weight, 
+                                     y = species,
+                                     color = genus)) + 
+  geom_boxplot() +
+  geom_density_ridges() +
+  labs(x = "Weight (grams)", 
+       y = "Species",
+       title = "Jittered version of Hindfoot Length vs Weight")
+```
+
+**11. Flipping Orientation**
+
+```{r}
+
+ggplot(data = surveys, mapping = aes(x = species, y = weight)) +
+  geom_boxplot() +
+  coord_flip() +
+  labs(y = "Weight (grams)", 
+       x = "Species",
+       title = "Flipped version of previous boxplots") 
+```

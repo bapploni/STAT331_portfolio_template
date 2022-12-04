@@ -1,0 +1,174 @@
+---
+title: "Lab 3"
+author: "Brady Applonie"
+format: 
+  html: 
+    theme: cerulean
+    fontsize: 0.9em
+    linestretch: 1.7
+    code-fold: true
+    code-summary: "Show the code"
+editor: visual
+execute: 
+    echo: true
+    error: true
+---
+
+```{r}
+#| output: false
+
+library(tidyverse)
+```
+
+```{r}
+#| output: false
+
+hiphop <- read_csv(here::here("Week 3", "hiphop.csv"))
+```
+
+### Assignment
+
+1.  This data-set contains responses from 168 participants regarding each of the 64 African-American English vocabulary words. Many of the variables are received as a Likert scale response, ranging from 1 - 5. There is also a binary measure of familiarity which codes a 0 as itself and 2 - 5 as 1.
+
+2.  The rows of the data-set are responses from each individual regarding each term.
+
+3.  The social network variables, \*Move and blackWeekly, were modified in that any missing values were filled in with the mean values of the variables. This is beneficial as it addressed data sparsity and allowed for a more complete data-set. However, by adding in values not actually observed, there are assumptions being made and therefore the data may not be representative.
+
+4.  
+
+```{r}
+#| output: false
+
+hiphop <- hiphop |> 
+  mutate(sex = as.factor(sex)) |> 
+  filter(county != 0, city != 0)
+```
+
+5.  
+
+```{r}
+#| output: false
+
+uniqueWords <- hiphop |> count(word)
+count(uniqueWords)
+```
+
+There were 64 unique words in this study.
+
+6.  
+
+```{r}
+#| output: false
+
+newEthnic <- ifelse(hiphop$ethnic == 'white', 'white', 'non-white')
+hiphop <- hiphop |> 
+  mutate(ethnic = newEthnic)
+```
+
+7.  
+
+```{r}
+#| output: false
+
+hiphop2 <- hiphop |> 
+   mutate(ethnic = as.factor(ethnic)) |> 
+   select(subj, age, sex, ethnic, word, familiarity) |> 
+   group_by(subj)
+
+hiphop2 <- hiphop2 |> 
+  distinct(subj, .keep_all = T)
+
+summary(hiphop2)
+```
+
+7.  Some demographics of people in the study are represented by the sex, age, and ethnic variables. There are 162 subjects. They have a minimum age of 16, a max of 48, with the mean being 20.1. There are 112 females and 50 males, 134 of which are white and 28 non-white.
+
+8.  
+
+```{r}
+
+ggplot(data = hiphop, 
+       mapping = aes(x = age, 
+                     y = sex,
+                     col = sex)) +
+       labs(x = "Age (years)",
+           y = "Sex") +
+       geom_boxplot() 
+  
+
+ggplot(data = hiphop, mapping = aes(x = ethnic, fill = sex)) +
+  geom_bar() +
+  facet_wrap(~ sex) +
+  labs(y = "count", x = "ethnicity",
+       title = "Ethnicity by gender")
+
+```
+
+### Familiar Words
+
+```{r}
+
+# A
+under20MostFam <- hiphop |> 
+  select(subj, age, sex, ethnic, word, familiarity) |> 
+  filter(age < 20) |> 
+  group_by(word) |> 
+  slice_max(familiarity) |> 
+  count(word)
+
+under20LeastFam <- hiphop |> 
+  select(subj, age, sex, ethnic, word, familiarity) |> 
+  filter(age < 20) |> 
+  group_by(word) |> 
+  slice_min(familiarity) |> 
+  count(word)
+
+
+# B
+nonWhiteFemMostFam <- hiphop |> 
+  select(subj, age, sex, ethnic, word, familiarity) |> 
+  filter(ethnic == "non-white",
+         sex == "Female") |> 
+  group_by(word) |> 
+  slice_max(familiarity) |> 
+  count(word)
+
+nonWhiteFemLeastFam <- hiphop |> 
+  select(subj, age, sex, ethnic, word, familiarity) |> 
+  filter(ethnic == "non-white",
+         sex == "Female") |> 
+  group_by(word) |> 
+  slice_min(familiarity) |> 
+  count(word)
+
+# C
+Over30MostFam <- hiphop |> 
+  select(subj, age, sex, ethnic, word, familiarity) |> 
+  filter(ethnic == "white" & 
+           sex == "Male" &
+           age > 30) |> 
+  group_by(word) |> 
+  slice_max(familiarity) |> 
+  count(word)
+
+Over30LeastFam <- hiphop |> 
+  select(subj, age, sex, ethnic, word, familiarity) |> 
+  filter(ethnic == "white" &
+           sex == "Male" &
+           age > 30) |> 
+  group_by(word) |> 
+  slice_min(familiarity) |> 
+  count(word)
+```
+
+### Study Subjects
+
+```{r}
+
+findingBieber <- hiphop |> 
+  filter(age > 16 & age < 24,
+         city > 9999 & city < 60001,
+         sex == "Male",
+         ethnic == "white",
+         bieber == 6)
+```

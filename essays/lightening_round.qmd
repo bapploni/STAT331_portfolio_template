@@ -3,3 +3,13 @@ title: "Lightening Round Essays"
 format: html
 editor: visual
 ---
+
+## Lightning Round
+
+The most difficult part of this class was keeping myself accountable with the soft deadlines as well as tidying data and working with special data types.
+
+The easiest part of this class was working on the preview activities and being able to collaborate with my group mates in class. It was helpful to be able to bring together our ideas.
+
+The part of this class that surprised me the most was how much it took to figure out some of the labs
+
+## Growth as a Data Scientist

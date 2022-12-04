@@ -1,0 +1,52 @@
+---
+title: "Practice Activity 4"
+author: "Brady Applonie"
+format:
+  html: 
+    self-contained: True
+    theme: cerulean
+    fontsize: 0.9em
+    linestretch: 1.7
+    code-fold: true
+    code-summary: "Show the code"
+    output: FALSE
+editor:
+  echo: true
+  error: true
+---
+
+```{r}
+library(readxl)
+library(tidyverse)
+#| output = FALSE
+
+military <- read_xlsx(here::here("Week 4", "gov_spending_per_capita.xlsx"), 
+                      sheet = "Share of Govt. spending", 
+                      skip = 7,
+                      n_max = 190)
+
+
+military_clean <- military |> 
+  mutate(across(everything(), 
+                .fns = na_if, y = ". ."),
+         across(everything(),
+                .fns = na_if, y = "xxx"))
+
+
+military_clean <- military |> 
+  mutate(across(.cols = c(4:35), 
+                .fns = as.numeric))
+
+cont_region <- read_xlsx(here::here("Week 4",
+                                    "gov_spending_per_capita.xlsx"), 
+                      sheet = "Regional totals", 
+                      skip = 14) |> 
+  filter(Region != "World total (including Iraq)", 
+         Region != "World total (excluding Iraq)")
+
+
+military_clean <- anti_join(military_clean, cont_region,
+                            by = c("Country" = "Region"))
+
+
+```
